@@ -12,7 +12,7 @@ stemmer = PorterStemmer()
 
 class preprocess:
     def __init__(self, dataframe):
-        self.df = dataframe
+        self.df = dataframe.copy()
 
     def set_classes(self):
         self.df.acct_type = self.df.acct_type.map({'premium': 0, 'fraudster_event': 1, 'fraudster': 1, 'spammer_limited': 0,
