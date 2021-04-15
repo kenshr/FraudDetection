@@ -1,5 +1,4 @@
 # ignore jupyter checkpoints
 .ipynbcheckpoints
-.ipynb
 
 data/
