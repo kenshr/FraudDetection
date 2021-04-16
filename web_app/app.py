@@ -1,9 +1,21 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
-  return '''<p> test </p>'''
+  data = [
+    ("01-01-2020", 1597),
+    ("02-01-2020", 1347),
+    ("03-01-2020", 1359),
+    ("04-01-2020", 1523),
+    ("05-01-2020", 1657),
+    ("06-01-2020", 3497),
+  ]
+
+  labels = [row[0] for row in data]
+  values = [row[1] for row in data]
+
+  return render_template("graph.html", labels=labels, values=values)
 
 @app.route('/hello', methods=['GET'])
 def hello_world():
