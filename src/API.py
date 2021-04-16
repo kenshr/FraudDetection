@@ -28,11 +28,8 @@ class EventAPIClient:
         client = MongoClient('localhost', 27017)
         db = client['fraud']
         collection = db['event']
-        
-        # j_row = pd.json_normalize(row)
+
         prediction = predict(row).tolist()
-        
-        
         row['prediction'] = prediction
         collection.insert_one(row)
 
@@ -64,16 +61,13 @@ def main():
     """Collect events every 30 seconds."""
     client = EventAPIClient()
     client.collect()
-    
+
 
 if __name__ == '__main__':
     """Collect events every 30 seconds."""
     client = EventAPIClient()
     client.collect()
-    
+
 # Usage Example
     client = EventAPIClient()
     output = client.collect()
-    #output.to_csv('output.csv')
-    # with open('output.txt', 'w') as outfile:
-    #     json.dump(output, outfile)
