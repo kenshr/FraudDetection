@@ -5,7 +5,6 @@ import pymongo
 from pymongo import MongoClient
 import pprint
 import pandas as pd
-from pipeline import * 
 from predict import *
 
 
@@ -30,11 +29,11 @@ class EventAPIClient:
         db = client['fraud']
         collection = db['event']
         
-        j_row = pd.read_json(row)
-        prep = preprocess(j_row).prep()
+        # j_row = pd.json_normalize(row)
+        prediction = predict(row).tolist()
         
         
-        row['prediction'] = OUR PREDICTION
+        row['prediction'] = prediction
         collection.insert_one(row)
 
     def get_data(self):
@@ -43,7 +42,6 @@ class EventAPIClient:
                    'sequence_number': self.next_sequence_number}
         response = requests.post(self.api_url, json=payload)
         data = response.json()
-        self.temp.append(data)
         self.next_sequence_number = data['_next_sequence_number']
         return data['data']
 
@@ -69,7 +67,7 @@ def main():
     
 
 if __name__ == '__main__':
-     """Collect events every 30 seconds."""
+    """Collect events every 30 seconds."""
     client = EventAPIClient()
     client.collect()
     
