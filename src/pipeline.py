@@ -15,17 +15,26 @@ class preprocess:
         self.df = dataframe.copy()
 
     def set_classes(self):
-        self.df.acct_type = self.df.acct_type.map({'premium': 0, 'fraudster_event': 1, 'fraudster': 1, 'spammer_limited': 0,
-                                                   'spammer_warn': 0, 'tos_warn': 0, 'spammer_noinvite': 0, 'tos_lock': 0, 'locked': 0,
-                                                   'fraudster_att': 1, 'spammer_web': 0, 'spammer': 0})
-        self.df.acct_type = self.df.acct_type.fillna(0)
+        if 'acct_type' in self.df.columns.to_list():
+            self.df.acct_type = self.df.acct_type.map({'premium': 0, 'fraudster_event': 1, 'fraudster': 1, 'spammer_limited': 0,
+                                                       'spammer_warn': 0, 'tos_warn': 0, 'spammer_noinvite': 0, 'tos_lock': 0, 'locked': 0,
+                                                       'fraudster_att': 1, 'spammer_web': 0, 'spammer': 0})
+            self.df.acct_type = self.df.acct_type.fillna(0)
 
     def scale(self):
         scaler = StandardScaler()
 
-        scaled_columns = self.df[['approx_payout_date', 'body_length', 'channels',
-                                  'event_created', 'event_end', 'event_published',
-                                 'event_start', 'gts', 'sale_duration', 'sale_duration2', 'user_age', 'venue_latitude', 'venue_longitude']]
+        # all columns that will be scaled/standardized
+        scale_lst = ['approx_payout_date', 'body_length', 'channels',
+                    'event_created', 'event_end', 'event_published',
+                    'event_start', 'gts', 'sale_duration', 'sale_duration2', 'user_age', 'venue_latitude', 'venue_longitude']
+
+        # check if incoming data contains all columns, remove non-existent columns from list
+        for col in scale_lst:
+            if col not in self.df.columns.to_list():
+                scale_lst.remove(col)
+
+        scaled_columns = self.df[scale_lst]
         column_names = scaled_columns.columns.tolist()
 
         self.df.drop(scaled_columns, axis=1, inplace=True)
