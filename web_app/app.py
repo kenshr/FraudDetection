@@ -25,7 +25,7 @@ def home():
       risk = 'Low'
     elif document['prediction'][0][1] < 0.5:
       risk = 'Medium'
-    else
+    else:
       risk = 'High'
 
     output_str += f'Event {idx}: {document["prediction"][0][1]}, Risk: {risk}<br/>'
