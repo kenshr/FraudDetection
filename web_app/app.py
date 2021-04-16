@@ -20,15 +20,21 @@ def home():
   for idx, document in enumerate(cursor, 1):
     if ct == 10:
       break
+    risk = ''
+    if document['prediction'][0][1] < 0.2:
+      risk = 'Low'
+    elif document['prediction'][0][1] < 0.5:
+      risk = 'Medium'
+    else
+      risk = 'High'
 
-    pred_dict[f'Event {idx}'] = document['prediction'][0][1]
-    output_str += f'Event {idx}: {document["prediction"][0][1]}<br/>'
+    output_str += f'Event {idx}: {document["prediction"][0][1]}, Risk: {risk}<br/>'
     ct += 1
 
   labels = pred_dict.keys()
   values = pred_dict.values()
 
-  return output_str, render_template("graph.html", labels=labels, values=values)
+  return output_str
 
 @app.route('/dashboard')
 def dashboard():
@@ -57,4 +63,4 @@ def form_display():
              <input type="submit" />'''
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=8000)
+  app.run(host='0.0.0.0', port=8000, debug=True)
