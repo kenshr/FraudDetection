@@ -6,17 +6,29 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+  # Initialize MongoDB database objects
   client = MongoClient('localhost', 27017)
   db = client['fraud']
   collection = db['event']
-  cursor = collection.find({})
-  pred_dict = dict()
-  output_str = '10 Most Recent Events:\n'
-  for idx, document in enumerate(cursor, 1):
-    pred_dict[f'prediction {idx}'] = document['prediction']
-    output_str += f'prediction {idx}: {document["prediction"][0][1]} \n'
 
-  return output_str
+  # Show 10 most recent events pulled from API
+  cursor = collection.find({}).sort([("_id",-1)])
+  pred_dict = dict()
+  output_str = '10 Most Recent Events:<br/>'
+
+  ct = 0
+  for idx, document in enumerate(cursor, 1):
+    if ct == 10:
+      break
+
+    pred_dict[f'Event {idx}'] = document['prediction'][0][1]
+    output_str += f'Event {idx}: {document["prediction"][0][1]}<br/>'
+    ct += 1
+
+  labels = pred_dict.keys()
+  values = pred_dict.values()
+
+  return output_str, render_template("graph.html", labels=labels, values=values)
 
 @app.route('/dashboard')
 def dashboard():
@@ -45,4 +57,4 @@ def form_display():
              <input type="submit" />'''
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=8080, debug=True)
+  app.run(host='0.0.0.0', port=8000)
