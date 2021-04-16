@@ -21,9 +21,9 @@ def home():
     if ct == 10:
       break
     risk = ''
-    if document['prediction'][0][1] < 0.2:
+    if float(document['prediction'][0][1]) < 0.2:
       risk = 'Low'
-    elif document['prediction'][0][1] < 0.5:
+    elif float(document['prediction'][0][1]) < 0.5:
       risk = 'Medium'
     else:
       risk = 'High'
