@@ -4,5 +4,6 @@ __pycache__/
 
 # ignore jupyter checkpoints
 .ipynbcheckpoints
+src/.ipynbcheckpoints
 
 data/
