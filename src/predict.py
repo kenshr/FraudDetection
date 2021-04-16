@@ -4,24 +4,24 @@ import pandas as pd
 import pickle
 import pipeline as p
 
-if __name__ == '__main__':
+def predict(new_data):
   # Load in pickled model
   with open('model_2.pkl', 'rb') as f:
     model = pickle.load(f)
 
-  # read in sample data and choose random datapoint
-  df = pd.read_csv('../data/sample.csv')
-  sample = df.sample(n=1)
+  # read in sample data and store as dataframe
+  df = pd.json_normalize(new_data)
 
   # preprocess sample
-  sample_clean = p.preprocess(sample).prep()
+  sample_clean = p.preprocess(df).prep()
 
   # REMOVE WHEN LIVE WITH API (data will never have label information)
   if  'acct_type' in sample_clean.columns.to_list():
     sample_clean.drop('acct_type', axis=1, inplace=True)
 
-  # REMOVE IF/WHEN WE DEBUG PIPELINE
-  sample_clean.drop(0, axis=0,inplace=True)
+  # REMOVE IF/WHEN WE DEBUG PIPELINE (Removes if there's an extra column (bug??))
+  if sample_clean.shape[0] > 1:
+    sample_clean.drop(0, axis=0,inplace=True)
 
   # schema that model was trained on
   schema = ['delivery_method','fb_published','has_analytics',
@@ -37,7 +37,10 @@ if __name__ == '__main__':
   final = pd.DataFrame(data=sample_clean, columns=schema)
   # fill NaNs
   final.fillna(0, inplace=True)
-
   # separate features and label
   X = final.copy()
-  print(model.predict_proba(X))
+  return model.predict_proba(X)
+
+
+if __name__ == '__main__':
+  pass
